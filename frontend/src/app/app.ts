@@ -1,6 +1,8 @@
+
 import { CommonModule } from "@angular/common";
 import { Component, OnInit, inject, signal } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { PageEvent } from "@angular/material/paginator";
 
 import { MatButtonModule } from "@angular/material/button";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -48,8 +50,9 @@ export class App implements OnInit {
 
   loadGenes() {
     this.isLoading.set(true);
+    const djangoPage = this.pageIndex() + 1;
 
-    this.geneService.getGenes().subscribe({
+    this.geneService.getGenes(djangoPage, this.pageSize(), this.minMim(), this.maxMim()).subscribe({
       next: (response) => {
         this.dataSource.set(response.results);
         this.totalGenes.set(response.count);
@@ -60,5 +63,16 @@ export class App implements OnInit {
         this.isLoading.set(false);
       },
     });
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+    this.loadGenes();
+  }
+
+  applyFilter() {
+    this.pageIndex.set(0);
+    this.loadGenes();
   }
 }

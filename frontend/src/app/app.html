@@ -1,8 +1,34 @@
+
 <div class="container">
   <header class="header">
     <h1>🧬 Gene Explorer</h1>
     <p class="subtitle">Search and explore gene information by MIM range</p>
   </header>
+
+  <div class="filters mat-elevation-z2">
+    <mat-form-field appearance="outline">
+      <mat-label>Min MIM Number</mat-label>
+      <input matInput type="number"
+        [ngModel]="minMim()"
+        (ngModelChange)="minMim.set($event)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Max MIM Number</mat-label>
+      <input matInput type="number"
+        [ngModel]="maxMim()"
+        (ngModelChange)="maxMim.set($event)" />
+    </mat-form-field>
+
+    <button
+      mat-flat-button
+      color="primary"
+      class="filter-button"
+      (click)="applyFilter()"
+      [disabled]="isLoading()">
+      Filtrar
+    </button>
+  </div>
 
   <mat-progress-bar
     class="loading-bar"
@@ -41,6 +67,7 @@
       [pageSize]="pageSize()"
       [pageSizeOptions]="pageSizeOptions"
       [pageIndex]="pageIndex()"
+      (page)="onPageChange($event)"
       showFirstLastButtons
       aria-label="Select page of genes"
     >

@@ -1,4 +1,5 @@
-import { HttpClient } from "@angular/common/http";
+
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 
@@ -25,7 +26,17 @@ export class GeneService {
 
   constructor(private http: HttpClient) {}
 
-  getGenes(): Observable<PaginatedResponse<Gene>> {
-    return this.http.get<PaginatedResponse<Gene>>(this.apiUrl);
+  getGenes(
+    page: number = 1,
+    pageSize: number = 50,
+    minMim?: number,
+    maxMim?: number,
+  ): Observable<PaginatedResponse<Gene>> {
+    let params = new HttpParams().set("offset", page).set("limit", pageSize);
+
+    if (minMim) params = params.set("min_mim", minMim);
+    if (maxMim) params = params.set("max_mim", maxMim);
+
+    return this.http.get<PaginatedResponse<Gene>>(this.apiUrl, { params });
   }
 }
